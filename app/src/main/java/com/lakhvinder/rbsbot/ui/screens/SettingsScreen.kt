@@ -103,9 +103,9 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            TutorialCard {
+            TutorialCard(provider = s.provider) {
                 context.startActivity(
-                    Intent(Intent.ACTION_VIEW, Uri.parse("https://instagram.com"))
+                    Intent(Intent.ACTION_VIEW, Uri.parse(ApiKeyGuide.urlFor(s.provider)))
                 )
             }
 
@@ -144,7 +144,7 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun TutorialCard(onClick: () -> Unit) {
+private fun TutorialCard(provider: AiProvider, onClick: () -> Unit) {
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E2A3F)),
@@ -160,12 +160,24 @@ private fun TutorialCard(onClick: () -> Unit) {
             Column(modifier = Modifier.weight(1f)) {
                 Text("Free API Key kaise banaye?", fontWeight = FontWeight.Bold, color = Color.White)
                 Text(
-                    "Watch 1-min video tutorial",
+                    ApiKeyGuide.hintFor(provider),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.75f)
                 )
             }
         }
+    }
+}
+
+private object ApiKeyGuide {
+    fun urlFor(provider: AiProvider): String = when (provider) {
+        AiProvider.GEMINI -> "https://aistudio.google.com/apikey"
+        AiProvider.OPENROUTER -> "https://openrouter.ai/keys"
+    }
+
+    fun hintFor(provider: AiProvider): String = when (provider) {
+        AiProvider.GEMINI -> "Kholo: aistudio.google.com/apikey -> Create API key (free). Tap to open."
+        AiProvider.OPENROUTER -> "Kholo: openrouter.ai/keys -> Create key (free models ke liye). Tap to open."
     }
 }
 
@@ -256,7 +268,7 @@ private fun GeminiSection(
             Column(modifier = Modifier.weight(1f)) {
                 Text("Google Search Grounding", style = MaterialTheme.typography.bodyLarge)
                 Text(
-                    "Current Affairs ke liye - Gemini live Google search karke naya data dega",
+                    "Current Affairs ke liye - Gemini live Google search se naya data dega. NOTE: iske liye Google AI ka paid/billing wala plan chahiye - free key par OFF hi rakho.",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

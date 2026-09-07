@@ -23,7 +23,7 @@ data class UserSettings(
     val provider: AiProvider = AiProvider.GEMINI,
     val geminiKey: String = "",
     val geminiModel: String = "gemini-1.5-flash",
-    val geminiGrounding: Boolean = true,
+    val geminiGrounding: Boolean = false,
     val openRouterKey: String = "",
     val openRouterModel: String = "google/gemma-2-9b-it:free"
 ) {
@@ -53,7 +53,7 @@ class SettingsRepository(private val context: Context) {
             provider = if (p[Keys.PROVIDER] == "openrouter") AiProvider.OPENROUTER else AiProvider.GEMINI,
             geminiKey = p[Keys.GEMINI_KEY] ?: "",
             geminiModel = p[Keys.GEMINI_MODEL] ?: "gemini-1.5-flash",
-            geminiGrounding = p[Keys.GEMINI_GROUNDING] ?: true,
+            geminiGrounding = p[Keys.GEMINI_GROUNDING] ?: false,
             openRouterKey = p[Keys.OPENROUTER_KEY] ?: "",
             openRouterModel = p[Keys.OPENROUTER_MODEL] ?: "google/gemma-2-9b-it:free"
         )
