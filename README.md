@@ -15,11 +15,13 @@ Built with Kotlin, Jetpack Compose, MVVM, Room, DataStore, Retrofit.
 
 ## Install
 
-Download the signed APK from the [Releases](https://github.com/lakh45vinder4679-cpu/rbs-bot/releases) page:
+**Tap to download RBS-Bot.apk (signed):**
 
-```
-https://github.com/lakh45vinder4679-cpu/rbs-bot/releases/latest/download/RBS-Bot.apk
-```
+[**Download RBS-Bot.apk**](https://github.com/lakh45vinder4679-cpu/rbs-bot/releases/latest/download/RBS-Bot.apk)
+
+Direct link (tap karke kholo): <https://github.com/lakh45vinder4679-cpu/rbs-bot/releases/latest/download/RBS-Bot.apk>
+
+Release page: [github.com/lakh45vinder4679-cpu/rbs-bot/releases](https://github.com/lakh45vinder4679-cpu/rbs-bot/releases)
 
 Then enable "Install unknown apps" for your file manager / browser and open the APK.
 
