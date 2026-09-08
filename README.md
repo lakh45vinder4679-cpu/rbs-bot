@@ -1,6 +1,16 @@
 # RBS Bot (by Lakhvinder)
 
+<p align="center"><img src="screenshots/logo.png" width="160" alt="RBS Bot logo"></p>
+
 Android app for **Rajasthan Board exams prep** (RPSC / CET / Board exams) with an AI assistant built into it.
+
+## Screenshots
+
+<p align="center"><img src="screenshots/grid.png" width="520" alt="App screens"></p>
+
+| Dashboard | AI Quiz | AI Chat | Settings |
+|---|---|---|---|
+| <img src="screenshots/dashboard.png" width="150"> | <img src="screenshots/quiz.png" width="150"> | <img src="screenshots/chat.png" width="150"> | <img src="screenshots/settings.png" width="150"> |
 
 - 4 study pillars on the home screen: **Rajasthan History**, **Geography**, **Art & Culture**, **Polity & Current Affairs**
 - **Live AI Quiz** — 10 MCQs per round with scorecard, explanations, and star-bookmarks
