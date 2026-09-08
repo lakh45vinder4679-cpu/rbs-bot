@@ -114,6 +114,16 @@ fun SettingsScreen(
                 onChange = { settingsVM.setProvider(it) }
             )
 
+            ModeCard(
+                s = s,
+                onEducation = settingsVM::setEducationMode,
+                onFreeOnly = settingsVM::setFreeOnly,
+                onAutoModel = settingsVM::setAutoModel,
+                onShowModel = settingsVM::setShowModel,
+                onIndianContext = settingsVM::setIndianContext,
+                onFallback = settingsVM::setFallback
+            )
+
             when (s.provider) {
                 AiProvider.GEMINI -> GeminiSection(
                     apiKey = s.geminiKey,
@@ -208,7 +218,7 @@ private fun ProviderSelector(provider: AiProvider, onChange: (AiProvider) -> Uni
                 )
                 Column {
                     Text("Google Gemini", style = MaterialTheme.typography.bodyLarge)
-                    Text("Live Search Grounding support", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Aaj ki free Flash models (3.5-flash)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             Row(
@@ -224,7 +234,7 @@ private fun ProviderSelector(provider: AiProvider, onChange: (AiProvider) -> Uni
                 )
                 Column {
                     Text("OpenRouter", style = MaterialTheme.typography.bodyLarge)
-                    Text("Free models (Gemma, Llama, Mistral)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Verified free models (Gemma 4, Nemotron 3)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -394,5 +404,87 @@ private fun ReadinessCard(ready: Boolean, provider: AiProvider) {
                 color = if (ready) Success else SaffronGold
             )
         }
+    }
+}
+
+@Composable
+private fun ModeCard(
+    s: com.lakhvinder.rbsbot.data.local.UserSettings,
+    onEducation: (Boolean) -> Unit,
+    onFreeOnly: (Boolean) -> Unit,
+    onAutoModel: (Boolean) -> Unit,
+    onShowModel: (Boolean) -> Unit,
+    onIndianContext: (Boolean) -> Unit,
+    onFallback: (Boolean) -> Unit
+) {
+    SectionCard(title = "Education & Model Settings") {
+        ToggleRow("Education Mode", "Friendly AI teacher - step-by-step samjhao, basics se", s.educationMode, onEducation)
+        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text("Hindi / Hinglish replies", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    if (s.language == AppLanguage.HINDI) "Ab ON hai - answers simple Hindi/Hinglish me" else "Ab OFF hai - answers English me (top-bar language button se badlo)",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        ToggleRow("Indian Context Priority", "Rajasthan syllabus, board pattern, Indian examples", s.indianContext, onIndianContext)
+        ToggleRow("Auto Model Selection", "Topic ke hisaab se best free model khud chune", s.autoModel, onAutoModel)
+        ToggleRow("Free Models Only", "Sirf verified free models - koi paid nahi", s.freeOnly, onFreeOnly)
+        ToggleRow("Fallback Enabled", "Model fail ho to dusra free model try kare", s.fallback, onFallback)
+        ToggleRow("Show Current Model", "Kaunsa AI model chal raha hai, wo dikhao", s.showModel, onShowModel)
+
+        Spacer(Modifier.height(6.dp))
+        val baseModel = com.lakhvinder.rbsbot.data.remote.AiClient.resolveModel(s)
+        val modelLine = when {
+            !s.autoModel -> "Manual model: $baseModel"
+            s.provider == com.lakhvinder.rbsbot.data.local.AiProvider.GEMINI -> "Gemini model: $baseModel"
+            else -> "Auto (topic-based) -> default: $baseModel"
+        }
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = if (s.freeOnly) Success else SaffronGold, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(modelLine, style = MaterialTheme.typography.bodySmall)
+            }
+        }
+        if (s.showModel) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Active model: ${if (com.lakhvinder.rbsbot.data.remote.AiClient.lastUsedModel != null) com.lakhvinder.rbsbot.data.remote.AiClient.lastUsedModel else "abhi koi call nahi hui"}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun ToggleRow(
+    label: String,
+    sub: String,
+    checked: Boolean,
+    onChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(label, style = MaterialTheme.typography.bodyLarge)
+            Text(sub, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onChange,
+            colors = androidx.compose.material3.SwitchDefaults.colors(checkedTrackColor = TealNeon)
+        )
     }
 }

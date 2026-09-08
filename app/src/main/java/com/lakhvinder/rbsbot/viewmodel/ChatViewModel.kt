@@ -30,6 +30,9 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    private val _modelLabel = MutableStateFlow("")
+    val modelLabel: StateFlow<String> = _modelLabel.asStateFlow()
+
     fun sendMessage(text: String) {
         val input = text.trim()
         if (input.isEmpty() || _sending.value) return
@@ -42,10 +45,12 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                     .map { ChatTurn(it.role, it.text) }
                 val settings = app.settingsRepository.settings.first()
                 if (!settings.isReady()) throw AiApiException("Pehle Settings me API key daalo - Gemini ya OpenRouter.")
-                val system = AiClient.systemPrompt(settings.language)
+                val system = AiClient.systemPrompt(settings)
                 val userPrompt = buildUserPrompt(history)
                 val reply = app.aiClient.chat(settings, system, userPrompt)
                 app.chatDao.insert(ChatMessageEntity(role = "assistant", text = reply))
+                _modelLabel.value =
+                    if (settings.showModel) (AiClient.lastUsedModel?.let { "Model: $it" } ?: "") else ""
             } catch (e: Exception) {
                 _error.value = friendly(e)
             } finally {

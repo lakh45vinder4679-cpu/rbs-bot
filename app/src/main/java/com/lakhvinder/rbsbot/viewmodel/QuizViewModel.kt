@@ -28,7 +28,8 @@ data class QuizUiState(
     val showExplain: Boolean = false,
     val score: Int = 0,
     val finished: Boolean = false,
-    val actionMessage: String? = null
+    val actionMessage: String? = null,
+    val modelLabel: String = ""
 ) {
     val current: Mcq? get() = questions.getOrNull(index)
     val progress: Int get() = index + 1
@@ -57,7 +58,8 @@ class QuizViewModel(
                 if (!settings.isReady()) throw AiApiException("Pehle Settings me API key daalo - Gemini ya OpenRouter.")
                 val qs = app.aiClient.fetchMcqs(settings, subject)
                 if (qs.size < 4) throw AiApiException("AI ne kaafi questions nahi diye. Retry karo.")
-                _state.update { it.copy(loading = false, questions = qs) }
+                _state.update { it.copy(loading = false, questions = qs,
+                    modelLabel = if (settings.showModel) (AiClient.lastUsedModel?.let { m -> "Model: $m" } ?: "") else "") }
             } catch (e: Exception) {
                 _state.update { it.copy(loading = false, error = friendly(e)) }
             }

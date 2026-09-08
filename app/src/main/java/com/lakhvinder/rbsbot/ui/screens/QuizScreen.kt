@@ -97,12 +97,28 @@ fun QuizScreen(
         },
         snackbarHost = { SnackbarHost(snackbar) }
     ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding)) {
-            when {
-                state.loading -> CenterLoading("AI se questions bante hain... thodi der")
-                state.error != null -> ErrorPanel(state.error.orEmpty(), quizVM::loadQuestions)
-                state.finished -> ScoreCard(state.score, state.questions.size, quizVM::restart, onBack)
-                else -> QuizContent(state.current, state.progress, state.questions.size, state.selected, state.answered, quizVM::selectOption)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            if (state.modelLabel.isNotEmpty()) {
+                Text(
+                    state.modelLabel,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 2.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Box(Modifier.weight(1f).fillMaxWidth()) {
+                when {
+                    state.loading -> CenterLoading("AI se questions bante hain... thodi der")
+                    state.error != null -> ErrorPanel(state.error.orEmpty(), quizVM::loadQuestions)
+                    state.finished -> ScoreCard(state.score, state.questions.size, quizVM::restart, onBack)
+                    else -> QuizContent(state.current, state.progress, state.questions.size, state.selected, state.answered, quizVM::selectOption)
+                }
             }
         }
     }

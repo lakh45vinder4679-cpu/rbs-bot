@@ -70,6 +70,7 @@ fun ChatScreen(
     val messages by chatVM.messages.collectAsStateWithLifecycle()
     val sending by chatVM.sending.collectAsStateWithLifecycle()
     val error by chatVM.error.collectAsStateWithLifecycle()
+    val modelLabel by chatVM.modelLabel.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     val listState = rememberLazyListState()
 
@@ -103,6 +104,16 @@ fun ChatScreen(
                 .padding(padding)
                 .imePadding()
         ) {
+            if (modelLabel.isNotEmpty()) {
+                Text(
+                    modelLabel,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 2.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             LazyColumn(
                 state = listState,
                 modifier = Modifier

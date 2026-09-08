@@ -33,4 +33,16 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun setOpenRouterKey(key: String) = viewModelScope.launch { app.settingsRepository.setOpenRouterKey(key) }
 
     fun setOpenRouterModel(model: String) = viewModelScope.launch { app.settingsRepository.setOpenRouterModel(model) }
+
+    fun setEducationMode(on: Boolean) = viewModelScope.launch { app.settingsRepository.setEducationMode(on) }
+
+    fun setFreeOnly(on: Boolean) = viewModelScope.launch { app.settingsRepository.setFreeOnly(on) }
+
+    fun setAutoModel(on: Boolean) = viewModelScope.launch { app.settingsRepository.setAutoModel(on) }
+
+    fun setShowModel(on: Boolean) = viewModelScope.launch { app.settingsRepository.setShowModel(on) }
+
+    fun setIndianContext(on: Boolean) = viewModelScope.launch { app.settingsRepository.setIndianContext(on) }
+
+    fun setFallback(on: Boolean) = viewModelScope.launch { app.settingsRepository.setFallback(on) }
 }

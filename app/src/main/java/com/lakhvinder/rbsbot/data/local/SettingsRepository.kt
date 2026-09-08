@@ -22,10 +22,16 @@ data class UserSettings(
     val language: AppLanguage = AppLanguage.HINDI,
     val provider: AiProvider = AiProvider.GEMINI,
     val geminiKey: String = "",
-    val geminiModel: String = "gemini-1.5-flash",
+    val geminiModel: String = "gemini-3.5-flash",
     val geminiGrounding: Boolean = false,
     val openRouterKey: String = "",
-    val openRouterModel: String = "google/gemma-2-9b-it:free"
+    val openRouterModel: String = "google/gemma-4-31b-it:free",
+    val educationMode: Boolean = true,
+    val freeOnly: Boolean = true,
+    val autoModel: Boolean = true,
+    val showModel: Boolean = true,
+    val indianContext: Boolean = true,
+    val fallback: Boolean = true
 ) {
     fun isReady(): Boolean = when (provider) {
         AiProvider.GEMINI -> geminiKey.isNotBlank()
@@ -45,6 +51,12 @@ class SettingsRepository(private val context: Context) {
         val GEMINI_GROUNDING = booleanPreferencesKey("gemini_grounding")
         val OPENROUTER_KEY = stringPreferencesKey("openrouter_key")
         val OPENROUTER_MODEL = stringPreferencesKey("openrouter_model")
+        val EDUCATION_MODE = booleanPreferencesKey("education_mode")
+        val FREE_ONLY = booleanPreferencesKey("free_only")
+        val AUTO_MODEL = booleanPreferencesKey("auto_model")
+        val SHOW_MODEL = booleanPreferencesKey("show_model")
+        val INDIAN_CONTEXT = booleanPreferencesKey("indian_context")
+        val FALLBACK = booleanPreferencesKey("fallback")
     }
 
     val settings: Flow<UserSettings> = context.settingsDataStore.data.map { p ->
@@ -52,10 +64,16 @@ class SettingsRepository(private val context: Context) {
             language = if (p[Keys.LANGUAGE] == "en") AppLanguage.ENGLISH else AppLanguage.HINDI,
             provider = if (p[Keys.PROVIDER] == "openrouter") AiProvider.OPENROUTER else AiProvider.GEMINI,
             geminiKey = p[Keys.GEMINI_KEY] ?: "",
-            geminiModel = p[Keys.GEMINI_MODEL] ?: "gemini-1.5-flash",
+            geminiModel = p[Keys.GEMINI_MODEL] ?: "gemini-3.5-flash",
             geminiGrounding = p[Keys.GEMINI_GROUNDING] ?: false,
             openRouterKey = p[Keys.OPENROUTER_KEY] ?: "",
-            openRouterModel = p[Keys.OPENROUTER_MODEL] ?: "google/gemma-2-9b-it:free"
+            openRouterModel = p[Keys.OPENROUTER_MODEL] ?: "google/gemma-4-31b-it:free",
+            educationMode = p[Keys.EDUCATION_MODE] ?: true,
+            freeOnly = p[Keys.FREE_ONLY] ?: true,
+            autoModel = p[Keys.AUTO_MODEL] ?: true,
+            showModel = p[Keys.SHOW_MODEL] ?: true,
+            indianContext = p[Keys.INDIAN_CONTEXT] ?: true,
+            fallback = p[Keys.FALLBACK] ?: true
         )
     }
 
@@ -76,4 +94,16 @@ class SettingsRepository(private val context: Context) {
     suspend fun setOpenRouterKey(key: String) = context.settingsDataStore.edit { it[Keys.OPENROUTER_KEY] = key }
 
     suspend fun setOpenRouterModel(model: String) = context.settingsDataStore.edit { it[Keys.OPENROUTER_MODEL] = model }
+
+    suspend fun setEducationMode(on: Boolean) = context.settingsDataStore.edit { it[Keys.EDUCATION_MODE] = on }
+
+    suspend fun setFreeOnly(on: Boolean) = context.settingsDataStore.edit { it[Keys.FREE_ONLY] = on }
+
+    suspend fun setAutoModel(on: Boolean) = context.settingsDataStore.edit { it[Keys.AUTO_MODEL] = on }
+
+    suspend fun setShowModel(on: Boolean) = context.settingsDataStore.edit { it[Keys.SHOW_MODEL] = on }
+
+    suspend fun setIndianContext(on: Boolean) = context.settingsDataStore.edit { it[Keys.INDIAN_CONTEXT] = on }
+
+    suspend fun setFallback(on: Boolean) = context.settingsDataStore.edit { it[Keys.FALLBACK] = on }
 }
